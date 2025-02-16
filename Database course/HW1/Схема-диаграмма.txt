@@ -1,0 +1,94 @@
+Table transaction {
+  id integer [primary key]
+  product_id integer [not null]
+  customer_id integer [not null]
+  transaction_date date [not null]
+  online_order bool [not null]
+  order_status_id integer [not null]
+  product_size_id integer [not null]
+  list_price float [not null]
+  standard_cost float [not null]
+}
+
+Table dim_product {
+  id integer [primary key]
+  name varchar [not null]
+  brand_id integer [not null]
+  product_line_id integer [not null]
+  product_class_id integer [not null]
+}
+
+Table dim_brand {
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_product_line{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_order_status{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_product_class{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_product_size{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table customer {
+  id integer [primary key]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  gender integer [NOT NULL]// CHECK (gender IN ('F', 'M'))]
+  DOB date
+  job_title varchar
+  job_industry_category_id integer
+  wealth_segment_id integer
+  deceased_indicator varchar [not null] // CHECK (deceased_indicator IN ('Y', 'N'))
+  owns_car varchar [not null] // CHECK (owns_car IN ('Yes', 'No'))
+  address varchar
+  postcode integer
+  state_id integer
+  property_valuation_id integer [not null] // CHECK (property_valuation_id BETWEEN 1 AND 12)
+}
+
+Table dim_state {
+  id integer [primary key]
+  name varchar [not null]
+  country_id integer [not null]
+}
+
+Table dim_country {
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_job_industry_category{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Table dim_wealth_segment{
+  id integer [primary key]
+  name varchar [not null]
+}
+
+Ref: dim_product.id < transaction.product_id
+Ref: dim_brand.id < dim_product.brand_id
+Ref: dim_product_line.id < dim_product.product_line_id
+Ref: dim_order_status.id < transaction.order_status_id
+Ref: dim_product_class.id < dim_product.product_class_id
+Ref: dim_product_size.id < transaction.product_size_id
+ref: dim_state.id < customer.state_id
+Ref: dim_country.id < dim_state.country_id
+Ref: dim_job_industry_category.id < customer.job_industry_category_id
+Ref: dim_wealth_segment.id < customer.wealth_segment_id
+ref: customer.id < transaction.customer_id
